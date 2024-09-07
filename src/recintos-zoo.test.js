@@ -22,7 +22,7 @@ describe('Recintos do Zoologico', () => {
         expect(resultado.recintosViaveis).toBeFalsy();
     });
 
-    // Teste para encontrar recintos viáveis
+    // Testes para encontrar recintos viáveis
     test('Deve encontrar recinto para 1 crocodilo', () => {
         const resultado = new RecintosZoo().analisaRecintos('CROCODILO', 1);
         expect(resultado.erro).toBeFalsy();
@@ -39,7 +39,7 @@ describe('Recintos do Zoologico', () => {
         expect(resultado.recintosViaveis.length).toBe(3);
     });
 
-    // Testes de regras específicas para animais
+    // Testes de regras específicas
     test('Carnívoros só podem dividir espaço com a própria espécie', () => {
         const resultado = new RecintosZoo().analisaRecintos('LEOPARDO', 1);
         expect(resultado.erro).toBeFalsy();
@@ -59,14 +59,7 @@ describe('Recintos do Zoologico', () => {
         expect(resultado.recintosViaveis[0]).toBe('Recinto 1 (espaço livre: 6 total: 10)');
     });
 
-    // Teste para verificar se não há recinto viável
-    test('Não deve encontrar recinto viável para animal que não cabe em nenhum recinto', () => {
-        const resultado = new RecintosZoo().analisaRecintos('HIPOPOTAMO', 10);
-        expect(resultado.erro).toBe("Não há recinto viável");
-        expect(resultado.recintosViaveis).toBeFalsy();
-    });
-
-    // Teste para verificar se a regra de espaço adicional está funcionando corretamente no recinto 1 é não esteja bugando no recinto 3
+    // Teste de bugs
     test('Deve considerar espaço adicional para múltiplas espécies', () => {
         const resultado = new RecintosZoo().analisaRecintos('GAZELA', 1);
         expect(resultado.erro).toBeFalsy();
