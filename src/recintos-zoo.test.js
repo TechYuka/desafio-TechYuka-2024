@@ -44,9 +44,8 @@ describe('Recintos do Zoologico', () => {
     // Testes de regras específicas
     test('Carnívoros só podem dividir espaço com a própria espécie', () => {
         const resultado = new RecintosZoo().analisaRecintos('LEOPARDO', 1);
-        expect(resultado.erro).toBeFalsy();
-        expect(resultado.recintosViaveis).toHaveLength(1);
-        expect(resultado.recintosViaveis[0]).toBe('Recinto 5 (espaço livre: 3 total: 9)');
+        expect(resultado.erro).toBe("Não há recinto viável");
+        expect(resultado.recintosViaveis).toBeFalsy();
     });
 
     test('Hipopótamos só aceitam outras espécies em savanas com rio', () => {

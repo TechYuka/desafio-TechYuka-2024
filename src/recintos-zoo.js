@@ -50,7 +50,7 @@ class RecintosZoo {
     verificaCarnivoro(animal, recinto) {
         const infoAnimal = this.animaisPermitidos[animal];
         if (infoAnimal.carnivoro && recinto.animais.length > 0) {
-            return !recinto.animais.some(a => !this.animaisPermitidos[a.especie].carnivoro);
+            return!recinto.animais.some(a => a.especie !== animal);
         }
         return true;
     }
