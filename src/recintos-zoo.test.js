@@ -92,4 +92,40 @@ describe('Recintos do Zoologico', () => {
         ]);
     });
 
+     test('Deve encher o Zoologico', () => {
+        const zoo = new RecintosZoo();
+
+        // Adicona gazela nos 3 recintos dsponiveis
+        const recinto1 = zoo.recintos.get(1);
+        recinto1.animais.push({ especie: 'GAZELA', quantidade: 2 });
+        const recinto2 = zoo.recintos.get(2);
+        recinto2.animais.push({ especie: 'GAZELA', quantidade: 1 });
+        const recinto3 = zoo.recintos.get(3);
+        recinto3.animais.push({ especie: 'GAZELA', quantidade: 1 });
+
+
+        // Verifica recintos viáveis para adicionar um macaco
+        const resultadoMacaco = zoo.analisaRecintos('MACACO', 2);
+        expect(resultadoMacaco.erro).toBeFalsy();
+        expect(resultadoMacaco.recintosViaveis).toHaveLength(3);
+        expect(resultadoMacaco.recintosViaveis).toEqual([
+            'Recinto 1 (espaço livre: 0 total: 10)',
+            'Recinto 2 (espaço livre: 0 total: 5)',
+            'Recinto 3 (espaço livre: 0 total: 7)'
+        ]);
+
+        // Verifica recinto viável para adicionar dois hipopotamos
+        const resultado = new RecintosZoo().analisaRecintos('HIPOPOTAMO', 2);
+        expect(resultado.erro).toBeFalsy();
+        expect(resultado.recintosViaveis).toHaveLength(1);
+        expect(resultado.recintosViaveis[0]).toBe('Recinto 4 (espaço livre: 0 total: 8)');
+
+        // Verifica recinto viável para 2 leões
+        const resultado1 = new RecintosZoo().analisaRecintos('LEAO', 2);
+        expect(resultado1.erro).toBeFalsy();
+        expect(resultado1.recintosViaveis).toHaveLength(1);
+        expect(resultado1.recintosViaveis[0]).toBe('Recinto 5 (espaço livre: 0 total: 9)')
+
+    });
+
 });
