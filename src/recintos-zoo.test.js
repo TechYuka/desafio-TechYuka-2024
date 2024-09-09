@@ -15,6 +15,12 @@ describe('Recintos do Zoologico', () => {
         expect(resultado.recintosViaveis).toBeFalsy();
     });
 
+    test('Deve rejeitar quantidade negativa', () => {
+        const resultado = new RecintosZoo().analisaRecintos('LEAO', -1);
+        expect(resultado.erro).toBe("Quantidade inválida");
+        expect(resultado.recintosViaveis).toBeFalsy();
+    })
+
     // Teste para animais que não cabem em nenhum recinto
     test('Não deve encontrar recintos para 10 macacos', () => {
         const resultado = new RecintosZoo().analisaRecintos('MACACO', 10);
@@ -39,6 +45,13 @@ describe('Recintos do Zoologico', () => {
             'Recinto 2 (espaço livre: 3 total: 5)',
             'Recinto 3 (espaço livre: 2 total: 7)'
         ]);
+    });
+
+    test('Deve encontrar recinto para 2 leões', () => {
+        const resultado = new RecintosZoo().analisaRecintos('LEAO', 2);
+        expect(resultado.erro).toBeFalsy();
+        expect(resultado.recintosViaveis).toHaveLength(1);
+        expect(resultado.recintosViaveis[0]).toBe('Recinto 5 (espaço livre: 0 total: 9)')
     });
 
     // Testes de regras específicas
