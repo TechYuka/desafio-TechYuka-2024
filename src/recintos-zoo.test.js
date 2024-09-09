@@ -92,6 +92,7 @@ describe('Recintos do Zoologico', () => {
         ]);
     });
 
+    //Teste para adicionar animais manualmente usando .push
      test('Deve encher o Zoologico', () => {
         const zoo = new RecintosZoo();
 
