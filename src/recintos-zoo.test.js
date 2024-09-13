@@ -21,6 +21,12 @@ describe('Recintos do Zoologico', () => {
         expect(resultado.recintosViaveis).toBeFalsy();
     })
 
+    test('Não deve encontrar recinto viável', () => {
+        const resultado = new RecintosZoo().analisaRecintos('LEOPARDO', 1);
+        expect(resultado.erro).toBe("Não há recinto viável");
+        expect(resultado.recintosViaveis).toBeFalsy();
+    });
+
     // Teste para animais que não cabem em nenhum recinto
     test('Não deve encontrar recintos para 10 macacos', () => {
         const resultado = new RecintosZoo().analisaRecintos('MACACO', 10);
@@ -54,21 +60,38 @@ describe('Recintos do Zoologico', () => {
         expect(resultado.recintosViaveis[0]).toBe('Recinto 5 (espaço livre: 0 total: 9)')
     });
 
-    // Testes de regras específicas
-    test('Carnívoros só podem dividir espaço com a própria espécie', () => {
-        const resultado = new RecintosZoo().analisaRecintos('LEOPARDO', 1);
-        expect(resultado.erro).toBe("Não há recinto viável");
-        expect(resultado.recintosViaveis).toBeFalsy();
-    });
-
-    test('Hipopótamos só aceitam outras espécies em savanas com rio', () => {
+    test('Deve adicionar 1 hipopotamo', () => {
         const resultado = new RecintosZoo().analisaRecintos('HIPOPOTAMO', 1);
         expect(resultado.erro).toBeFalsy();
         expect(resultado.recintosViaveis).toHaveLength(2);
         expect(resultado.recintosViaveis).toEqual([
             'Recinto 3 (espaço livre: 0 total: 7)',
-            "Recinto 4 (espaço livre: 4 total: 8)"
+            'Recinto 4 (espaço livre: 4 total: 8)'
         ]);
+    });
+
+    // Testes de regras específicas
+    test('Hipopótamos só aceitam outras espécies em savanas com rio', () => {
+        const zoo = new RecintosZoo();
+
+        // Adicona CROCODILO no recinto
+        const recinto = zoo.recintos.get(4);
+        recinto.animais.push({ especie: 'CROCODILO', quantidade: 1 });
+
+        // Verifica recintos viáveis para adicionar 1 hipopotamo
+        const resultado = zoo.analisaRecintos('HIPOPOTAMO', 1);
+        expect(resultado.erro).toBeFalsy();
+        expect(resultado.recintosViaveis).toHaveLength(1);
+        expect(resultado.recintosViaveis).toEqual([
+            'Recinto 3 (espaço livre: 0 total: 7)',
+        ]);
+
+    });
+
+    test('Carnívoros só podem dividir espaço com a própria espécie', () => {
+        const resultado = new RecintosZoo().analisaRecintos('LEOPARDO', 1);
+        expect(resultado.erro).toBe("Não há recinto viável");
+        expect(resultado.recintosViaveis).toBeFalsy();
     });
 
     test('Macacos não se sentem confortáveis sozinhos', () => {
@@ -89,6 +112,24 @@ describe('Recintos do Zoologico', () => {
         expect(resultado.recintosViaveis).toEqual([
             'Recinto 1 (espaço livre: 4 total: 10)',
             'Recinto 3 (espaço livre: 3 total: 7)'
+        ]);
+    });
+
+    // Teste de bugs
+    test('(Bug) Hipopótamos só aceitam outras espécies em savanas com rio', () => {
+        const zoo = new RecintosZoo();
+
+        // Adicona hipotamo no recinto
+        const recinto = zoo.recintos.get(4);
+        recinto.animais.push({ especie: 'HIPOPOTAMO', quantidade: 1 });
+
+        // Verifica recintos viáveis para adicionar 1 hipopotamo
+        const resultado = zoo.analisaRecintos('HIPOPOTAMO', 1);
+        expect(resultado.erro).toBeFalsy();
+        expect(resultado.recintosViaveis).toHaveLength(2);
+        expect(resultado.recintosViaveis).toEqual([
+            'Recinto 3 (espaço livre: 0 total: 7)',
+            'Recinto 4 (espaço livre: 0 total: 8)'
         ]);
     });
 
