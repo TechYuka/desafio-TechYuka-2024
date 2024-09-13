@@ -1,3 +1,5 @@
+// Logicá para colocar os animais de um zoológico nos recintos adequados; seguindo regras pré estabelecidas
+
 const ESPECIES = {
     LEAO: "LEAO",
     MACACO: "MACACO",
@@ -35,7 +37,7 @@ class RecintosZoo {
             [ESPECIES.HIPOPOTAMO]: { tamanho: 4, bioma: [BIOMAS.SAVANA, BIOMAS.RIO], carnivoro: false }
         };
 
-        // Regras de quais recintos permitem quais espécies
+        // Regra de quais recintos permitem quais espécies
         this.recintosPermitidos = {
             [ESPECIES.LEAO]: [5],
             [ESPECIES.LEOPARDO]: [5],
@@ -48,30 +50,35 @@ class RecintosZoo {
 
     // Regra dos carnivoros
     verificaCarnivoro(animal, recinto) {
-        const infoAnimal = this.animaisPermitidos[animal];
-        if (infoAnimal.carnivoro && recinto.animais.length > 0) {
+        if (recinto.animais.length > 0) {
             return!recinto.animais.some(a => a.especie !== animal);
         }
         return true;
     }
 
     // Regra dos hipopotamos
-    verificaHipopotamo(animal, recinto) {
-        if (animal === ESPECIES.HIPOPOTAMO && recinto.animais.length > 0 && recinto.bioma !== BIOMAS.SAVANA_RIO) {
+    verificaHipopotamo(recinto) {
+        if (recinto.animais.length > 0 && recinto.bioma !== BIOMAS.SAVANA_RIO && recinto.animais.some(a => a.especie !== ESPECIES.HIPOPOTAMO)) {
             return false;
         }
         return true;
     }
 
     // Regra dos macacos
-    verificaMacaco(animal, quantidade, recinto) {
-        if (animal === ESPECIES.MACACO && quantidade < 2 && recinto.animais.length === 0) {
+    verificaMacaco(quantidade, recinto) {
+        if (quantidade < 2 && recinto.animais.length === 0) {
             return false;
         }
         return true;
     }
 
     analisaRecintos(animal, quantidade) {
+
+        let recintosViaveis = [];  // Cria a variavel de saida inicializada com um array
+
+        // Busca os dados do animal
+        const infoAnimal = this.animaisPermitidos[animal];
+        
         // Validações iniciais
         if (!this.animaisPermitidos[animal]) {
             return { erro: "Animal inválido" };
@@ -81,12 +88,9 @@ class RecintosZoo {
             return { erro: "Quantidade inválida" };
         }
 
-        // Busca os dados do animal da lista
-        const infoAnimal = this.animaisPermitidos[animal];
-        let recintosViaveis = [];
-
-        // Vare os recntos em busca dos adequados
+        // Varre os recintos em busca dos adequados
         for (const [numero, recinto] of this.recintos.entries()) {
+
             // Verifica se o recinto é adequado na lista de recintos permitidos
             if (!this.recintosPermitidos[animal].includes(numero)) {
                 continue;
@@ -97,13 +101,23 @@ class RecintosZoo {
                 return total + (this.animaisPermitidos[a.especie].tamanho * a.quantidade);
             }, 0);
 
-            // Declara variaveis que serão usadas para fazer a saida do programa
+            // Declara o espaço livre no recinto
             let espacoLivre = recinto.tamanho - espacoOcupado;
+
             const espacoNecessario = infoAnimal.tamanho * quantidade;
 
+            // Regras carnívoros
+            if (infoAnimal.carnivoro && !this.verificaCarnivoro(animal, recinto)) {
+                continue;
+            }
 
-            // Regras específicas de carnívoros, hipopótamos e macacos
-            if (!this.verificaCarnivoro(animal, recinto) || !this.verificaHipopotamo(animal, recinto) || !this.verificaMacaco(animal, quantidade, recinto)) {
+            // Regra macacos
+            if (animal === ESPECIES.MACACO && !this.verificaMacaco(quantidade, recinto)) {
+                continue;
+            }
+
+            // Regra hipopótamos
+            if (animal === ESPECIES.HIPOPOTAMO && !this.verificaHipopotamo(recinto)) {
                 continue;
             }
 
@@ -118,7 +132,7 @@ class RecintosZoo {
             }
         }
 
-        // Retorna a lista de recintos viáveis ou erro se nenhum for encontrado
+        // Retorna a variavel de recintos viáveis ou erro se nenhum for encontrado
         if (recintosViaveis.length > 0) {
             return { recintosViaveis };
         } else {
