@@ -104,6 +104,7 @@ class RecintosZoo {
             // Declara o espaço livre no recinto
             let espacoLivre = recinto.tamanho - espacoOcupado;
 
+            // Declara espaço necessaro para o animal usando a const infoAnimal
             const espacoNecessario = infoAnimal.tamanho * quantidade;
 
             // Regras carnívoros
