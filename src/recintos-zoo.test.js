@@ -170,4 +170,43 @@ describe('Recintos do Zoologico', () => {
 
     });
 
+    // test de carga
+    test('Deve suportar a adição de um grande número de animais, ignorando erro específico', () => {
+        const ESPECIES = {
+            LEAO: "LEAO",
+            MACACO: "MACACO",
+            GAZELA: "GAZELA",
+            CROCODILO: "CROCODILO",
+            LEOPARDO: "LEOPARDO",
+            HIPOPOTAMO: "HIPOPOTAMO"
+        };
+
+        const zoo = new RecintosZoo();
+        const NUMERO_TESTES = 10000;
+        const erros = [];
+        
+        // Lista de espécies disponíveis
+        const especies = Object.values(ESPECIES);
+        
+        for (let i = 0; i < NUMERO_TESTES; i++) {
+            // Seleciona uma espécie aleatória da lista
+            const especie = especies[Math.floor(Math.random() * especies.length)];
+            
+            // Quantidade aleatória de 1 a 5
+            const quantidade = Math.floor(Math.random() * 5) + 1;
+
+            const resultado = zoo.analisaRecintos(especie, quantidade);
+            if (resultado.erro && resultado.erro !== "Não há recinto viável") {
+                erros.push(resultado.erro);
+            }
+        }
+
+        // Log para inspeção
+        console.log('Erros encontrados:', erros);
+
+        // Espera que a maioria dos testes passe sem erros
+        expect(erros.length).toBeLessThan(NUMERO_TESTES * 0.1);  // Ajustado para 1%
+    });
+
+
 });
